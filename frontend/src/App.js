@@ -31,7 +31,7 @@ class App extends React.Component {
 class EmployeeList extends React.Component{
   render() {
     const employees = this.props.employees.map(employee =>
-        <Employee key={employee.id} employee={employee}/>
+        <Employee key={employee.id} employee={employee} updateTableCallback={this.props.updateTableCallback}/>
     );
 
     return (
@@ -73,20 +73,19 @@ class EmployeeList extends React.Component{
 // class Employee extends React.Component{
 function Employee({updateTableCallback, employee}) {
 
-    const deleteEmployee =  (event) => {
-        event.preventDefault();
-        console.log(event.target);
+    const deleteEmployee =  (empID) => {
+        // console.log(empID);
 
-        // fetch('/api/employees', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(inputs)
-        // }).then(res => {
-        //     updateTableCallback();
-        // });
+        fetch('/api/employees/'+empID, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: ""
+        }).then(res => {
+            updateTableCallback();
+        });
     }
 
 
@@ -99,7 +98,7 @@ function Employee({updateTableCallback, employee}) {
             <td>
                 <a href="#" className="edit" title="Edit" data-toggle="tooltip"><i
                     className="material-icons">&#xE254;</i></a>
-                <a href="#" className="delete" title="Delete" data-toggle="tooltip" onClick={deleteEmployee}><i
+                <a key={employee.id} href="#" className="delete" title="Delete" data-toggle="tooltip" onClick={() => deleteEmployee(employee.id)}><i
                     className="material-icons">&#xE872;</i></a>
             </td>
         </tr>
@@ -118,7 +117,7 @@ function CreationForm({updateTableCallback}) {
 
     const handleSubmit =  (event) => {
         event.preventDefault();
-        console.log(inputs);
+        // console.log(inputs);
 
         fetch('/api/employees', {
             method: 'POST',
