@@ -3,35 +3,36 @@ import './App.css';
 import React, { useState } from "react";
 
 class App extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {employees: []};
-    this.updateTable = this.updateTable.bind(this);
-  }
-
-  async componentDidMount() {
-    const response = await fetch('/api/employees');
-    const body = await response.json();
-    this.setState({employees: body});
-  }
-
-    updateTable() {
-        console.log("update table")
-        this.componentDidMount();
-    }
-
   render() {
     return (
-        <EmployeeList employees={this.state.employees} updateTableCallback = {this.updateTable}/>
+        <EmployeeList/>
     )
   }
 }
 
 class EmployeeList extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {employees: []};
+        this.updateTable = this.updateTable.bind(this);
+    }
+
+    async componentDidMount() {
+        const response = await fetch('/api/employees');
+        const body = await response.json();
+        this.setState({employees: body});
+    }
+
+    updateTable() {
+        console.log("Table update")
+        this.componentDidMount();
+    }
+
+
+
   render() {
-    const employees = this.props.employees.map(employee =>
-        <Employee key={employee.id} employee={employee} updateTableCallback={this.props.updateTableCallback}/>
+    const employees = this.state.employees.map(employee =>
+        <Employee key={employee.id} employee={employee} updateTableCallback={this.updateTable}/>
     );
 
     return (
@@ -62,7 +63,7 @@ class EmployeeList extends React.Component{
                     </table>
                 </div>
             </div>
-            <CreationForm updateTableCallback = {this.props.updateTableCallback}/>
+            <CreationForm updateTableCallback = {this.updateTable}/>
         </div>
 
 
@@ -77,12 +78,7 @@ function Employee({updateTableCallback, employee}) {
         // console.log(empID);
 
         fetch('/api/employees/'+empID, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: ""
+            method: 'DELETE'
         }).then(res => {
             updateTableCallback();
         });
