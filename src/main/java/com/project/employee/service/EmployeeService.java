@@ -21,6 +21,7 @@ public class EmployeeService {
 
     // GET
     public List<Employee> getEmployees() {
+        List<Employee> a = empRepository.findAll();
         return empRepository.findAll();
     }
     // GET BY ID

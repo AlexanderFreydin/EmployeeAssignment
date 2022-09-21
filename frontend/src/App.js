@@ -15,6 +15,7 @@ class EmployeeList extends React.Component{
         super(props);
         this.state = {employees: []};
         this.updateTable = this.updateTable.bind(this);
+        this.deleteEmployee = this.deleteEmployee.bind(this);
     }
 
     async componentDidMount() {
@@ -28,11 +29,30 @@ class EmployeeList extends React.Component{
         this.componentDidMount();
     }
 
+     deleteEmployee(empID){
+        fetch('/api/employees/'+empID, {
+            method: 'DELETE'
+        }).then(res => {
+            this.updateTable();
+        });
+    }
+
+    // editEmployee(emp){
+    //     fetch('/api/employees/'+emp.id, {
+    //         method: 'PUT',
+    //         body: {
+    //
+    //         }
+    //     }).then(res => {
+    //         this.updateTable();
+    //     });
+    // }
+
 
 
   render() {
     const employees = this.state.employees.map(employee =>
-        <Employee key={employee.id} employee={employee} updateTableCallback={this.updateTable}/>
+        <Employee key={employee.id} employee={employee} deleteEmployeeCallback = {this.deleteEmployee} updateTableCallback={this.updateTable}/>
     );
 
     return (
@@ -72,21 +92,34 @@ class EmployeeList extends React.Component{
 }
 
 // class Employee extends React.Component{
-function Employee({updateTableCallback, employee}) {
+function Employee({deleteEmployeeCallback, updateTableCallback, employee}) {
+    // editMode = true;
 
-    const deleteEmployee =  (empID) => {
-        // console.log(empID);
-
-        fetch('/api/employees/'+empID, {
-            method: 'DELETE'
-        }).then(res => {
-            updateTableCallback();
-        });
-    }
+    // const deleteEmployee =  (empID) => {
+    //     // console.log(empID);
+    //
+    //     fetch('/api/employees/'+empID, {
+    //         method: 'DELETE'
+    //     }).then(res => {
+    //         updateTableCallback();
+    //     });
+    // }
 
 
     return (
         <tr>
+            {/*<td>{(()=>{*/}
+            {/*    if (editMode){*/}
+            {/*        return (*/}
+            {/*            <td><input name="empId" placeholder={employee.id}/></td>*/}
+            {/*        )*/}
+            {/*    }*/}
+            {/*    else {*/}
+            {/*        return (*/}
+            {/*            <td>{employee.id}</td>*/}
+            {/*        )*/}
+            {/*    }*/}
+            {/*})()}</td>*/}
           <td>{employee.id}</td>
           <td>{employee.firstName}</td>
           <td>{employee.lastName}</td>
@@ -94,7 +127,7 @@ function Employee({updateTableCallback, employee}) {
             <td>
                 <a href="#" className="edit" title="Edit" data-toggle="tooltip"><i
                     className="material-icons">&#xE254;</i></a>
-                <a key={employee.id} href="#" className="delete" title="Delete" data-toggle="tooltip" onClick={() => deleteEmployee(employee.id)}><i
+                <a key={employee.id} href="#" className="delete" title="Delete" data-toggle="tooltip" onClick={() => deleteEmployeeCallback(employee.id)}><i
                     className="material-icons">&#xE872;</i></a>
             </td>
         </tr>
